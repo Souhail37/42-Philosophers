@@ -5,12 +5,12 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: sismaili <sismaili@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/11/05 16:03:46 by sismaili          #+#    #+#             */
-/*   Updated: 2022/06/08 19:23:55 by sismaili         ###   ########.fr       */
+/*   Created: 2022/07/31 21:46:30 by sismaili          #+#    #+#             */
+/*   Updated: 2022/07/31 21:47:06 by sismaili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../philo.h"
+#include "philo.h"
 
 static int	ft_count(char const *s, char c)
 {
@@ -85,7 +85,7 @@ static char	**ft_sub(char **str, char const *s, char *sub, char c)
 	return (str);
 }
 
-char	**ft_split(char *s, char c)
+char	**ft_split(char const *s, char c)
 {
 	char	**str;
 	char	*sub;

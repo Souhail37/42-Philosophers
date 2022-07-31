@@ -5,14 +5,14 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: sismaili <sismaili@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/03/16 19:35:56 by eseiv             #+#    #+#             */
-/*   Updated: 2022/06/08 19:24:00 by sismaili         ###   ########.fr       */
+/*   Created: 2022/07/31 21:49:00 by sismaili          #+#    #+#             */
+/*   Updated: 2022/07/31 22:00:33 by sismaili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../philo.h"
+#include "philo.h"
 
-size_t	ft_strlen1(char *s)
+size_t	ft_strlen(char *s)
 {
 	unsigned int	i;
 
@@ -24,7 +24,7 @@ size_t	ft_strlen1(char *s)
 	return (i);
 }
 
-char	*ft_strjoin1(char *buffers, char *buff, char c)
+char	*ft_strjoin(char *buffers, char *buff, char c)
 {
 	int		i;
 	int		j;
@@ -35,8 +35,8 @@ char	*ft_strjoin1(char *buffers, char *buff, char c)
 		buffers = (char *)malloc(sizeof(char));
 		buffers[0] = '\0';
 	}
-	new = (char *)malloc(sizeof(char) * (ft_strlen1(buffers)
-				+ ft_strlen1(buff) + 2));
+	new = (char *)malloc(sizeof(char) * (ft_strlen(buffers)
+				+ ft_strlen(buff) + 2));
 	if (!new)
 		return (0);
 	i = -1;
@@ -59,7 +59,7 @@ void	ft_joinargs(char **str, char **av)
 	i = 1;
 	while (av[i])
 	{
-		*str = ft_strjoin1(*str, av[i], ' ');
+		*str = ft_strjoin(*str, av[i], ' ');
 		i++;
 	}
 }
