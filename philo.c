@@ -6,28 +6,24 @@
 /*   By: sismaili <sismaili@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/29 14:53:39 by sismaili          #+#    #+#             */
-/*   Updated: 2022/07/31 22:28:17 by sismaili         ###   ########.fr       */
+/*   Updated: 2022/07/31 23:15:51 by sismaili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-// int	check_errors(char **av)
-// {
-// 	int	i;
+void	ft_free(t_data *var)
+{
+	int	i;
 
-// 	i = 0;
-// 	while (av[i])
-// 	{
-// 		if (!ft_isdigit(av[i]) || !is_max_int())
-// 		{
-// 			write(2, "error\n", 6);
-// 			return (0);
-// 		}
-// 		i++;
-// 	}
-// 	return (1);
-// }
+	i = 0;
+	while (var->spl[i])
+		free(var->spl[i++]);
+	free(var->spl);
+	free(var->str);
+	if (var->philo)
+		free(var->philo);
+}
 
 int	valid_args(char **av)
 {
@@ -50,9 +46,19 @@ int	valid_args(char **av)
 	return (1);
 }
 
+void	ft_init(t_philo *philo, char **spl)
+{
+	philo->numb_of_philo = ft_atoi(spl[0]);
+	philo->time_to_die = ft_atoi(spl[1]);
+	philo->time_to_eat = ft_atoi(spl[2]);
+	philo->time_to_sleep = ft_atoi(spl[3]);
+	if (spl[4])
+		philo->notepme = ft_atoi(spl[4]);
+}
+
 int	main(int ac, char **av)
 {
-	t_philo	ph;
+	t_data	var;
 	int		i;
 
 	i = 0;
@@ -63,14 +69,19 @@ int	main(int ac, char **av)
 	}
 	if (!valid_args(av + 1))
 		return (0);
-	ft_joinargs(&ph.str, av);
-	ph.spl = ft_split(ph.str, ' ');
-	while (ph.spl[i])
+	ft_joinargs(&var.str, av);
+	var.spl = ft_split(var.str, ' ');
+	while (var.spl[i])
 		i++;
-	if (!ft_isdigit(ph.spl) || !is_max_int(ph.spl, i))
+	if (!ft_isdigit(var.spl) || !is_max_int(var.spl, i))
 	{
 		write(2, "error\n", 6);
 		return (0);
 	}
+	var.philo = malloc(sizeof(t_philo) * i);
+	if (!var.philo)
+		return (0);
+	ft_init(var.philo, var.spl);
+	ft_free(&var);
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: sismaili <sismaili@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/31 16:39:05 by sismaili          #+#    #+#             */
-/*   Updated: 2022/07/31 22:29:05 by sismaili         ###   ########.fr       */
+/*   Updated: 2022/07/31 22:59:08 by sismaili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,14 +20,19 @@
 
 typedef struct s_philo
 {
-	char	*str;
-	char	**spl;
 	int		numb_of_philo;
 	int		time_to_die;
 	int		time_to_eat;
 	int		time_to_sleep;
-	int		notepme;
+	int		notepme;	
 }	t_philo;
+
+typedef struct s_data
+{
+	char	*str;
+	char	**spl;
+	t_philo	*philo;
+}	t_data;
 
 int		ft_atoi(char *str);
 int		ft_isdigit(char **str);
