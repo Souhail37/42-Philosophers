@@ -6,7 +6,7 @@
 /*   By: sismaili <sismaili@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/31 16:39:05 by sismaili          #+#    #+#             */
-/*   Updated: 2022/07/31 22:59:08 by sismaili         ###   ########.fr       */
+/*   Updated: 2022/08/01 23:36:18 by sismaili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,20 +18,30 @@
 # include <stdlib.h>
 # include <pthread.h>
 
-typedef struct s_philo
+typedef struct s_number
 {
 	int		numb_of_philo;
 	int		time_to_die;
 	int		time_to_eat;
 	int		time_to_sleep;
-	int		notepme;	
+	int		notepme;
+}	t_number;
+
+typedef struct s_philo
+{
+	int				index;
+	int				last_time;
+	int				number_of_eating_times;
+	pthread_mutex_t	fork;
+	pthread_mutex_t	next_fork;
 }	t_philo;
 
 typedef struct s_data
 {
-	char	*str;
-	char	**spl;
-	t_philo	*philo;
+	char		*str;
+	char		**spl;
+	t_number	numbers;
+	t_philo		*philo;
 }	t_data;
 
 int		ft_atoi(char *str);
@@ -42,5 +52,6 @@ size_t	ft_strlen(char *s);
 char	**ft_split(char const *s, char c);
 char	*ft_strjoin(char *buffers, char *buff, char c);
 void	ft_joinargs(char **str, char **av);
+void    ft_philo(t_data *var);
 
 #endif
