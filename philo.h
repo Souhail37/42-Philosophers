@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sismaili <sismaili@student.42.fr>          +#+  +:+       +#+        */
+/*   By: newgate <newgate@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/31 16:39:05 by sismaili          #+#    #+#             */
-/*   Updated: 2022/08/01 23:36:18 by sismaili         ###   ########.fr       */
+/*   Updated: 2022/08/04 15:47:50 by newgate          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,15 +32,15 @@ typedef struct s_philo
 	int				index;
 	int				last_time;
 	int				number_of_eating_times;
-	pthread_mutex_t	fork;
-	pthread_mutex_t	next_fork;
+	pthread_mutex_t	*forks;
+	t_number	numbers;
+	// pthread_mutex_t	next_fork;
 }	t_philo;
 
 typedef struct s_data
 {
 	char		*str;
 	char		**spl;
-	t_number	numbers;
 	t_philo		*philo;
 }	t_data;
 

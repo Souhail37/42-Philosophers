@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_split.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sismaili <sismaili@student.42.fr>          +#+  +:+       +#+        */
+/*   By: newgate <newgate@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/31 21:46:30 by sismaili          #+#    #+#             */
-/*   Updated: 2022/07/31 21:47:06 by sismaili         ###   ########.fr       */
+/*   Updated: 2022/08/04 15:57:58 by newgate          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,8 +89,6 @@ char	**ft_split(char const *s, char c)
 {
 	char	**str;
 	char	*sub;
-	int		i;
-	int		len;
 
 	if (!s)
 		return (0);
@@ -98,8 +96,6 @@ char	**ft_split(char const *s, char c)
 	str = (char **) malloc(sizeof(*str) * ft_count(s, c) + 1);
 	if (!str)
 		return (0);
-	i = 0;
-	len = 0;
 	ft_sub(str, s, sub, c);
 	return (str);
 }
