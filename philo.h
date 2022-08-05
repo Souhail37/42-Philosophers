@@ -18,6 +18,12 @@
 # include <stdlib.h>
 # include <pthread.h>
 
+typedef struct s_f_mutex
+{
+	pthread_mutex_t	fork;
+	int				f_status;
+}	t_mutex;
+
 typedef struct s_number
 {
 	int		numb_of_philo;
@@ -29,18 +35,19 @@ typedef struct s_number
 
 typedef struct s_philo
 {
-	int				index;
-	int				last_time;
-	int				number_of_eating_times;
-	pthread_mutex_t	*forks;
-	t_number	numbers;
-	// pthread_mutex_t	next_fork;
+	int			index;
+	int			last_time;
+	int			number_of_eating_times;
+	t_number	*numbers;
+	t_mutex		fork;
+	t_mutex		*next_fork;
 }	t_philo;
 
 typedef struct s_data
 {
 	char		*str;
 	char		**spl;
+	t_number	numbers;
 	t_philo		*philo;
 }	t_data;
 
