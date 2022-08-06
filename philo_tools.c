@@ -29,6 +29,7 @@ void	ft_init(t_data *var, char **spl)
 	while (i < var->numbers.numb_of_philo)
 	{
 		pthread_mutex_init(&var->philo[i].fork.fork, NULL);
+		var->philo[i].fork.f_status = 0;
 		i++;
 	}
 	i = 0;
@@ -39,29 +40,63 @@ void	ft_init(t_data *var, char **spl)
 	}
 }
 
+void	ft_time(int	number)
+{
+	struct timeval	time;
+	int				start;
+
+	gettimeofday(&time, NULL);
+	start = time.tv_sec * 1000;
+	while (1)
+	{
+		gettimeofday(&time, NULL);
+		if (time.tv_sec * 1000 - start >= number)
+			return ;
+		else
+			usleep(50);
+	}
+}
+
 void	*thread_fun(void *data)
 {
 	t_philo	philo;
 
 	philo = *(t_philo *)data;
-	if (philo.fork.f_status == 0)
+	if (philo.fork.f_status == 0 && philo.next_fork->f_status == 0)
 	{
 		pthread_mutex_lock(&philo.fork.fork);
 		philo.fork.f_status = 1;
 		printf("philo number %d takes first fork\n", philo.index);
-	}
-	if (philo.next_fork->f_status == 0)
-	{
 		pthread_mutex_lock(&philo.next_fork->fork);
 		philo.next_fork->f_status = 1;
 		printf("philo number %d takes second fork\n", philo.index);
 		printf("philo number %d bda l9ass\n", philo.index);
-		usleep(200);
-		// philo.fork.f_status = 0;
-		// philo.next_fork->f_status = 0;
+		ft_time(philo.numbers->time_to_eat);
+		philo.fork.f_status = 0;
+		philo.next_fork->f_status = 0;
+		pthread_mutex_unlock(&philo.fork.fork);
+		pthread_mutex_unlock(&philo.next_fork->fork);
 	}
-	pthread_mutex_unlock(&philo.fork.fork);
-	pthread_mutex_unlock(&philo.next_fork->fork);
+	else
+	{
+		if (philo.fork.f_status == 0 && philo.next_fork->f_status == 1)
+		{
+			pthread_mutex_lock(&philo.fork.fork);
+			philo.fork.f_status = 1;
+			printf("philo number %d takes first fork\n", philo.index);
+		}
+		else if (philo.next_fork->f_status == 0 && philo.fork.f_status == 1)
+		{
+			pthread_mutex_lock(&philo.next_fork->fork);
+			philo.next_fork->f_status = 1;
+			printf("philo number %d takes second fork\n", philo.index);
+		}
+		else
+		{
+			while (philo.fork.f_status == 1 && philo.next_fork->f_status == 1)
+				printf("philo number %d is thinking\n", philo.index);
+		}
+	}
 	return (NULL);
 }
 
@@ -76,6 +111,12 @@ void	ft_philo(t_data *var)
 	if (!th)
 		return ;
 	var->philo->numbers = &var->numbers;
+	while (i < var->numbers.numb_of_philo)
+	{
+		var->philo[i].numbers = &var->numbers;
+		i++;
+	}
+	i = 0;
 	while (i < var->numbers.numb_of_philo)
 	{
 		var->philo[i].index = i + 1;
