@@ -40,6 +40,14 @@ void	ft_init(t_data *var, char **spl)
 	}
 }
 
+int	ft_gettime()
+{
+	struct timeval	time;
+
+	gettimeofday(&time, NULL);
+	return (time.tv_sec * 1000);
+}
+
 void	ft_time(int	number)
 {
 	struct timeval	time;
@@ -54,6 +62,18 @@ void	ft_time(int	number)
 			return ;
 		else
 			usleep(50);
+	}
+}
+
+void	*ft_checker(void *data)
+{
+	t_philo			philo;
+
+	philo = *(t_philo *)data;
+	philo.checker.status = 1;
+	while (philo.checker.status)
+	{
+		
 	}
 }
 
@@ -131,6 +151,16 @@ void	ft_philo(t_data *var)
 	while (i < var->numbers.numb_of_philo)
 	{
 		if (pthread_join(th[i], NULL) != 0)
+		{
+			free (th);
+			return ;
+		}
+		i++;
+	}
+	i = 0;
+	while (i < var->numbers.numb_of_philo)
+	{
+		if (pthread_create(&var->philo->checker.checker[i], NULL, &ft_checker, &var->philo[i]) != 0)
 		{
 			free (th);
 			return ;

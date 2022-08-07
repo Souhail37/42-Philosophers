@@ -34,6 +34,12 @@ typedef struct s_number
 	int		notepme;
 }	t_number;
 
+typedef struct s_checker
+{
+	pthread_t	*checker;
+	int			status;
+}	t_checker;
+
 typedef struct s_philo
 {
 	int			index;
@@ -42,6 +48,7 @@ typedef struct s_philo
 	t_number	*numbers;
 	t_mutex		fork;
 	t_mutex		*next_fork;
+	t_checker	checker;
 }	t_philo;
 
 typedef struct s_data
