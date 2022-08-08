@@ -67,14 +67,24 @@ void	ft_time(int	number)
 
 void	*ft_checker(void *data)
 {
-	t_philo			philo;
+	t_philo	philo;
+	int		check;
 
 	philo = *(t_philo *)data;
-	philo.checker.status = 1;
+	check = 0;
 	while (philo.checker.status)
 	{
-		
+		if (ft_gettime() - philo.last_time >= philo.numbers->time_to_die)
+		{
+			printf("philo number %d is died\n", philo.index);
+			philo.checker.status = 0;
+		}
+		if (philo.numbers->notepme > 0 && check < philo.numbers->notepme)
+			check++;
 	}
+	if (check == philo.numbers->notepme)
+		philo.checker.status = 0;
+	return (NULL);
 }
 
 void	*thread_fun(void *data)
@@ -82,39 +92,46 @@ void	*thread_fun(void *data)
 	t_philo	philo;
 
 	philo = *(t_philo *)data;
-	if (philo.fork.f_status == 0 && philo.next_fork->f_status == 0)
+	while (philo.checker.status)
 	{
-		pthread_mutex_lock(&philo.fork.fork);
-		philo.fork.f_status = 1;
-		printf("philo number %d takes first fork\n", philo.index);
-		pthread_mutex_lock(&philo.next_fork->fork);
-		philo.next_fork->f_status = 1;
-		printf("philo number %d takes second fork\n", philo.index);
-		printf("philo number %d bda l9ass\n", philo.index);
-		ft_time(philo.numbers->time_to_eat);
-		philo.fork.f_status = 0;
-		philo.next_fork->f_status = 0;
-		pthread_mutex_unlock(&philo.fork.fork);
-		pthread_mutex_unlock(&philo.next_fork->fork);
-	}
-	else
-	{
-		if (philo.fork.f_status == 0 && philo.next_fork->f_status == 1)
+		if (philo.fork.f_status == 0 && philo.next_fork->f_status == 0)
 		{
 			pthread_mutex_lock(&philo.fork.fork);
 			philo.fork.f_status = 1;
 			printf("philo number %d takes first fork\n", philo.index);
-		}
-		else if (philo.next_fork->f_status == 0 && philo.fork.f_status == 1)
-		{
 			pthread_mutex_lock(&philo.next_fork->fork);
 			philo.next_fork->f_status = 1;
 			printf("philo number %d takes second fork\n", philo.index);
+			printf("philo number %d bda l9ass\n", philo.index);
+			philo.last_time = ft_gettime();
+			ft_time(philo.numbers->time_to_eat);
+			philo.fork.f_status = 0;
+			philo.next_fork->f_status = 0;
+			pthread_mutex_unlock(&philo.fork.fork);
+			pthread_mutex_unlock(&philo.next_fork->fork);
+			printf("philo number %d n3ass\n", philo.index);
+			ft_time(philo.numbers->time_to_sleep);
+			printf("philo number %d kifakar\n", philo.index);
 		}
 		else
 		{
-			while (philo.fork.f_status == 1 && philo.next_fork->f_status == 1)
-				printf("philo number %d is thinking\n", philo.index);
+			if (philo.fork.f_status == 0 && philo.next_fork->f_status == 1)
+			{
+				pthread_mutex_lock(&philo.fork.fork);
+				philo.fork.f_status = 1;
+				printf("philo number %d takes first fork\n", philo.index);
+			}
+			else if (philo.next_fork->f_status == 0 && philo.fork.f_status == 1)
+			{
+				pthread_mutex_lock(&philo.next_fork->fork);
+				philo.next_fork->f_status = 1;
+				printf("philo number %d takes second fork\n", philo.index);
+			}
+			else
+			{
+				while (philo.fork.f_status == 1 && philo.next_fork->f_status == 1)
+					printf("philo number %d is thinking\n", philo.index);
+			}
 		}
 	}
 	return (NULL);
@@ -128,12 +145,14 @@ void	ft_philo(t_data *var)
 	i = 0;
 	ft_init(var, var->spl);
 	th = malloc(sizeof(pthread_t) * var->numbers.numb_of_philo);
-	if (!th)
+	var->philo->checker.checker = malloc(sizeof(pthread_t) * var->numbers.numb_of_philo);
+	if (!th || !var->philo->checker.checker)
 		return ;
 	var->philo->numbers = &var->numbers;
 	while (i < var->numbers.numb_of_philo)
 	{
 		var->philo[i].numbers = &var->numbers;
+		var->philo[i].checker.status = 1;
 		i++;
 	}
 	i = 0;
@@ -162,7 +181,17 @@ void	ft_philo(t_data *var)
 	{
 		if (pthread_create(&var->philo->checker.checker[i], NULL, &ft_checker, &var->philo[i]) != 0)
 		{
-			free (th);
+			free (var->philo->checker.checker);
+			return ;
+		}
+		i++;
+	}
+	i = 0;
+	while (i < var->numbers.numb_of_philo)
+	{
+		if (pthread_join(var->philo->checker.checker[i], NULL) != 0)
+		{
+			free (var->philo->checker.checker);
 			return ;
 		}
 		i++;
