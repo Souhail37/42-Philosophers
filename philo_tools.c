@@ -23,19 +23,21 @@ void	ft_init(t_data *var, char **spl)
 	var->numbers.time_to_sleep = ft_atoi(spl[3]);
 	if (spl[4])
 		var->numbers.notepme = ft_atoi(spl[4]);
+	var->numbers.start = ft_gettime();
 	var->philo = malloc(sizeof(t_philo) * var->numbers.numb_of_philo);
-	if (!var->philo)
+	var->forks = malloc(sizeof(pthread_mutex_t) * var->numbers.numb_of_philo);
+	if (!var->philo || !var->forks)
 		return ;
 	while (i < var->numbers.numb_of_philo)
 	{
-		pthread_mutex_init(&var->philo[i].fork.fork, NULL);
-		var->philo[i].fork.f_status = 0;
+		pthread_mutex_init(&var->forks[i], NULL);
 		i++;
 	}
 	i = 0;
 	while (i < var->numbers.numb_of_philo)
 	{
-		var->philo[i].next_fork = &var->philo[(i + 1) % var->numbers.numb_of_philo].fork;
+		var->philo[i].fork = &var->forks[i];
+		var->philo[i].next_fork = &var->forks[(i + 1) % var->numbers.numb_of_philo];
 		i++;
 	}
 }
@@ -59,83 +61,95 @@ void	ft_time(long number)
 
 void	*ft_checker(void *data)
 {
-	t_philo	philo;
+	t_philo	*philo;
 	int		check;
 
-	philo = *(t_philo *)data;
+	philo = data;
 	check = 0;
-	while (philo.checker.status)
+	while (philo->checker.status)
 	{
-		if (ft_gettime() - philo.last_time >= philo.numbers->time_to_die)
+		if (ft_gettime() - philo->last_time >= philo->numbers->time_to_die)
 		{
-			printf("philo number %d is died\n", philo.index);
-			philo.checker.status = 0;
+			printf("philo number %d died\n", philo->index);
+			philo->checker.status = 0;
 		}
-		if (philo.numbers->notepme > 0 && check < philo.numbers->notepme)
+		if (philo->numbers->notepme > 0 && check < philo->numbers->notepme)
 			check++;
 	}
-	if (check == philo.numbers->notepme)
-		philo.checker.status = 0;
+	if (check == philo->numbers->notepme)
+		philo->checker.status = 0;
 	return (NULL);
 }
 
 void	*thread_fun(void *data)
 {
-	t_philo	philo;
+	t_philo	*philo;
 
-	philo = *(t_philo *)data;
-	while (philo.checker.status)
+	philo = data;
+	while (philo->checker.status)
 	{
-		if (philo.fork.f_status == 0 && philo.next_fork->f_status == 0)
-		{
-			philo.fork.f_status = 1;
-			philo.next_fork->f_status = 1;
-			pthread_mutex_lock(&philo.fork.fork);
-			printf("philo number %d takes first fork\n", philo.index);
-			pthread_mutex_lock(&philo.next_fork->fork);
-			printf("philo number %d takes second fork\n", philo.index);
-			printf("philo number %d bda l9ass\n", philo.index);
-			philo.last_time = ft_gettime();
-			ft_time(philo.numbers->time_to_eat);
-			philo.fork.f_status = 0;
-			philo.next_fork->f_status = 0;
-			pthread_mutex_unlock(&philo.fork.fork);
-			pthread_mutex_unlock(&philo.next_fork->fork);
-			printf("philo number %d n3ass\n", philo.index);
-			ft_time(philo.numbers->time_to_sleep);
-		}
-		else
-		{
-			while (philo.fork.f_status == 1 && philo.next_fork->f_status == 1)
-					printf("philo number %d is thinking\n", philo.index);
-			if (philo.fork.f_status == 0 && philo.next_fork->f_status == 1)
-			{
-				pthread_mutex_lock(&philo.fork.fork);
-				philo.fork.f_status = 1;
-				printf("philo number %d takes first fork\n", philo.index);
-				pthread_mutex_lock(&philo.next_fork->fork);
-				philo.next_fork->f_status = 1;
-				printf("philo number %d takes second fork\n", philo.index);
-			}
-			else if (philo.next_fork->f_status == 0 && philo.fork.f_status == 1)
-			{
-				pthread_mutex_lock(&philo.next_fork->fork);
-				philo.next_fork->f_status = 1;
-				printf("philo number %d takes first fork\n", philo.index);
-				pthread_mutex_lock(&philo.fork.fork);
-				philo.fork.f_status = 1;
-				printf("philo number %d takes second fork\n", philo.index);
-			}
-			printf("philo number %d bda l9ass\n", philo.index);
-			philo.last_time = ft_gettime();
-			ft_time(philo.numbers->time_to_eat);
-			philo.fork.f_status = 0;
-			philo.next_fork->f_status = 0;
-			pthread_mutex_unlock(&philo.fork.fork);
-			pthread_mutex_unlock(&philo.next_fork->fork);
-			printf("philo number %d n3ass\n", philo.index);
-			ft_time(philo.numbers->time_to_sleep);
-		}
+		pthread_mutex_lock(philo->fork);
+		pthread_mutex_lock(philo->next_fork);
+		printf("%ld philo number %d takes first fork\n", ft_gettime() - philo->numbers->start, philo->index);
+		printf("%ld philo number %d takes second fork\n", ft_gettime() - philo->numbers->start, philo->index);
+		printf("%ld philo number %d bda l9ass\n", ft_gettime() - philo->numbers->start, philo->index);
+		philo->last_time = ft_gettime();
+		ft_time(philo->numbers->time_to_eat);
+		pthread_mutex_unlock(philo->fork);
+		pthread_mutex_unlock(philo->next_fork);
+		printf("%ld philo number %d n3ass\n", ft_gettime() - philo->numbers->start, philo->index);
+		ft_time(philo->numbers->time_to_sleep);
+		printf("%ld philo number %d is thinking\n", ft_gettime() - philo->numbers->start, philo->index);
+		// if (philo.fork.f_status == 0 && philo.next_fork->f_status == 0)
+		// {
+		// 	philo.fork.f_status = 1;
+		// 	philo.next_fork->f_status = 1;
+		// 	pthread_mutex_lock(&philo.fork.fork);
+		// 	printf("philo number %d takes first fork\n", philo.index);
+		// 	pthread_mutex_lock(&philo.next_fork->fork);
+		// 	printf("philo number %d takes second fork\n", philo.index);
+		// 	printf("philo number %d bda l9ass\n", philo.index);
+		// 	philo.last_time = ft_gettime();
+		// 	ft_time(philo.numbers->time_to_eat);
+		// 	philo.fork.f_status = 0;
+		// 	philo.next_fork->f_status = 0;
+		// 	pthread_mutex_unlock(&philo.fork.fork);
+		// 	pthread_mutex_unlock(&philo.next_fork->fork);
+		// 	printf("philo number %d n3ass\n", philo.index);
+		// 	ft_time(philo.numbers->time_to_sleep);
+		// }
+		// else
+		// {
+		// 	while (philo.fork.f_status == 1 && philo.next_fork->f_status == 1)
+		// 			printf("philo number %d is thinking\n", philo.index);
+		// 	if (philo.fork.f_status == 0 && philo.next_fork->f_status == 1)
+		// 	{
+		// 		pthread_mutex_lock(&philo.fork.fork);
+		// 		philo.fork.f_status = 1;
+		// 		printf("philo number %d takes first fork\n", philo.index);
+		// 		pthread_mutex_lock(&philo.next_fork->fork);
+		// 		philo.next_fork->f_status = 1;
+		// 		printf("philo number %d takes second fork\n", philo.index);
+		// 	}
+		// 	else if (philo.next_fork->f_status == 0 && philo.fork.f_status == 1)
+		// 	{
+		// 		pthread_mutex_lock(&philo.next_fork->fork);
+		// 		philo.next_fork->f_status = 1;
+		// 		printf("philo number %d takes first fork\n", philo.index);
+		// 		pthread_mutex_lock(&philo.fork.fork);
+		// 		philo.fork.f_status = 1;
+		// 		printf("philo number %d takes second fork\n", philo.index);
+		// 	}
+		// 	printf("philo number %d bda l9ass\n", philo.index);
+		// 	philo.last_time = ft_gettime();
+		// 	ft_time(philo.numbers->time_to_eat);
+		// 	philo.fork.f_status = 0;
+		// 	philo.next_fork->f_status = 0;
+		// 	pthread_mutex_unlock(&philo.fork.fork);
+		// 	pthread_mutex_unlock(&philo.next_fork->fork);
+		// 	printf("philo number %d n3ass\n", philo.index);
+		// 	ft_time(philo.numbers->time_to_sleep);
+		// }
 	}
 	return (NULL);
 }
@@ -159,6 +173,12 @@ void	ft_philo(t_data *var)
 		i++;
 	}
 	i = 0;
+	// while (i < var->numbers.numb_of_philo)
+	// {
+	// 	var->philo[i].numbers->start = ft_gettime();
+	// 	i++;
+	// }
+	// i = 0;
 	while (i < var->numbers.numb_of_philo)
 	{
 		var->philo[i].index = i + 1;

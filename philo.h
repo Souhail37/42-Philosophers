@@ -27,6 +27,7 @@ typedef struct s_f_mutex
 
 typedef struct s_number
 {
+	long	start;
 	int		numb_of_philo;
 	int		time_to_die;
 	int		time_to_eat;
@@ -46,8 +47,10 @@ typedef struct s_philo
 	int			last_time;
 	int			number_of_eating_times;
 	t_number	*numbers;
-	t_mutex		fork;
-	t_mutex		*next_fork;
+	// t_mutex		fork;
+	// t_mutex		*next_fork;
+	pthread_mutex_t	*fork;
+	pthread_mutex_t	*next_fork;
 	t_checker	checker;
 }	t_philo;
 
@@ -57,6 +60,7 @@ typedef struct s_data
 	char		**spl;
 	t_number	numbers;
 	t_philo		*philo;
+	pthread_mutex_t	*forks;
 }	t_data;
 
 int		ft_atoi(char *str);
@@ -68,5 +72,6 @@ char	**ft_split(char const *s, char c);
 char	*ft_strjoin(char *buffers, char *buff, char c);
 void	ft_joinargs(char **str, char **av);
 void    ft_philo(t_data *var);
+long	ft_gettime();
 
 #endif
