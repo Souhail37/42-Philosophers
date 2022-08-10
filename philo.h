@@ -37,18 +37,15 @@ typedef struct s_number
 
 typedef struct s_checker
 {
-	pthread_t	*checker;
 	int			status;
 }	t_checker;
 
 typedef struct s_philo
 {
 	int			index;
-	int			last_time;
+	long		last_time;
 	int			number_of_eating_times;
 	t_number	*numbers;
-	// t_mutex		fork;
-	// t_mutex		*next_fork;
 	pthread_mutex_t	*fork;
 	pthread_mutex_t	*next_fork;
 	t_checker	checker;
