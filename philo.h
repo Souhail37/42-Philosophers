@@ -35,20 +35,16 @@ typedef struct s_number
 	int		notepme;
 }	t_number;
 
-typedef struct s_checker
-{
-	int			status;
-}	t_checker;
-
 typedef struct s_philo
 {
 	int			index;
 	long		last_time;
 	int			number_of_eating_times;
+	int			status;
+	pthread_t	philo;
 	t_number	*numbers;
 	pthread_mutex_t	*fork;
 	pthread_mutex_t	*next_fork;
-	t_checker	checker;
 }	t_philo;
 
 typedef struct s_data

@@ -12,12 +12,14 @@
 
 #include "philo.h"
 
-void	printf_mutex(char *str, t_philo *philo)
+void	printf_mutex(char *str, t_philo philo)
 {
 	pthread_mutex_t	print;
 
 	pthread_mutex_lock(&print);
-	printf("%ld philo number %d %s\n", ft_gettime() - philo->numbers->start, philo->index, str);
+	var->numbers->start = ft_gettime();
+	printf("start %ld\n", philo.numbers->start);
+	printf("%ld philo number %d %s\n", ft_gettime() - philo.numbers->start, philo.index, str);
 	pthread_mutex_unlock(&print);
 }
 
@@ -26,7 +28,6 @@ void	ft_init(t_data *var, char **spl)
 	int	i;
 
 	i = 0;
-	var->numbers.start = ft_gettime();
 	var->numbers.numb_of_philo = ft_atoi(spl[0]);
 	var->numbers.time_to_die = ft_atoi(spl[1]);
 	var->numbers.time_to_eat = ft_atoi(spl[2]);
@@ -34,7 +35,7 @@ void	ft_init(t_data *var, char **spl)
 	if (spl[4])
 		var->numbers.notepme = ft_atoi(spl[4]);
 	else
-		var->numbers.notepme = 0;
+		var->numbers.notepme = -1;
 	var->philo = malloc(sizeof(t_philo) * var->numbers.numb_of_philo);
 	var->forks = malloc(sizeof(pthread_mutex_t) * var->numbers.numb_of_philo);
 	if (!var->philo || !var->forks)
@@ -73,57 +74,50 @@ void	ft_time(long number)
 void	*ft_checker(void *data)
 {
 	t_philo	*philo;
-	int		checker;
-	int		counter;
 	int		i;
 
 	philo = (t_philo *)data;
-	i = 0;
-	while (i < philo->numbers->numb_of_philo)
+	while (philo->status)
 	{
-		checker = 1;
-		counter = 0;
-		while (checker)
+		i = 0;
+		while (i < philo->numbers->numb_of_philo)
 		{
-			if (ft_gettime() - philo->last_time >= philo->numbers->time_to_die)
+			if (ft_gettime() - philo[i].last_time >= philo[i].numbers->time_to_die)
 			{
-				printf_mutex("died", philo);
-				checker = 0;
+				printf_mutex("died", *philo);
+				philo[i].status = 0;
 				return (NULL);
 			}
-			if (philo->numbers->notepme > 0 && counter <= philo->numbers->notepme)
+			if (philo[i].numbers->notepme > 0 && philo[i].number_of_eating_times == philo[i].numbers->notepme)
 			{
-				counter++;
-				if (counter == philo->numbers->notepme)
-				{
-					checker = 0;
-					return (NULL);
-				}
+				philo[i].status = 0;
+				return (NULL);
 			}
+			i++;
 		}
-		i++;
 	}
 	return (NULL);
 }
 
 void	*thread_fun(void *data)
 {
-	t_philo	*philo;
+	t_philo	philo;
 
-	philo = (t_philo *)data;
-	while (philo->checker.status)
+	philo = *(t_philo *)data;
+	while (philo.status)
 	{
-		pthread_mutex_lock(philo->fork);
-		pthread_mutex_lock(philo->next_fork);
+		pthread_mutex_lock(philo.fork);
+		pthread_mutex_lock(philo.next_fork);
 		printf_mutex("takes first fork", philo);
 		printf_mutex("takes second fork", philo);
 		printf_mutex("is eating", philo);
-		philo->last_time = ft_gettime();
-		ft_time(philo->numbers->time_to_eat);
-		pthread_mutex_unlock(philo->fork);
-		pthread_mutex_unlock(philo->next_fork);
+		philo.number_of_eating_times += 1;
+		philo.last_time = ft_gettime();
+		ft_time(philo.numbers->time_to_eat);
+		pthread_mutex_unlock(philo.fork);
+		pthread_mutex_unlock(philo.next_fork);
 		printf_mutex("is sleeping", philo);
-		ft_time(philo->numbers->time_to_sleep);
+		ft_time(philo.numbers->time_to_sleep);
 		printf_mutex("is thinking", philo);
 	}
 	return (NULL);
@@ -131,32 +125,29 @@ void	*thread_fun(void *data)
 
 void	ft_philo(t_data *var)
 {
-	pthread_t	*th;
 	pthread_t	checker;
 	int			i;
 
 	i = 0;
 	ft_init(var, var->spl);
-	th = malloc(sizeof(pthread_t) * var->numbers.numb_of_philo);
-	checker = malloc(sizeof(pthread_t) * var->numbers.numb_of_philo);
-	if (!th || !checker)
-		return ;
 	while (i < var->numbers.numb_of_philo)
 	{
 		var->philo[i].numbers = &var->numbers;
-		var->philo[i].checker.status = 1;
+		var->philo[i].status = 1;
+		var->philo[i].number_of_eating_times = 0;
 		i++;
 	}
 	i = 0;
 	while (i < var->numbers.numb_of_philo)
 	{
 		var->philo[i].index = i + 1;
-		if (pthread_create(&th[i], NULL, &thread_fun, &var->philo[i]) != 0)
+		var->philo[i].last_time = ft_gettime();
+		if (pthread_create(&var->philo[i].philo, NULL, &thread_fun, &var->philo[i]) != 0)
 		{
-			free (th);
+			free (var->philo[i].philo);
 			return ;
 		}
-		pthread_detach(th[i]);
+		pthread_detach(var->philo[i].philo);
 		i++;
 	}
 	if (pthread_create(&checker, NULL, &ft_checker, var->philo) != 0)
@@ -169,5 +160,4 @@ void	ft_philo(t_data *var)
 		free (checker);
 		return ;
 	}
-	printf("we are done !!\n");
 }
