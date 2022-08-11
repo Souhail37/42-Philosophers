@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo_tools.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: newgate <newgate@student.42.fr>            +#+  +:+       +#+        */
+/*   By: sismaili <sismaili@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 16:08:21 by sismaili          #+#    #+#             */
-/*   Updated: 2022/08/04 16:01:53 by newgate          ###   ########.fr       */
+/*   Updated: 2022/08/11 15:02:09 by sismaili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,7 @@ void	printf_mutex(char *str, t_philo philo)
 	pthread_mutex_t	print;
 
 	pthread_mutex_lock(&print);
-	var->numbers->start = ft_gettime();
-	printf("start %ld\n", philo.numbers->start);
+	philo.numbers->start = ft_gettime();
 	printf("%ld philo number %d %s\n", ft_gettime() - philo.numbers->start, philo.index, str);
 	pthread_mutex_unlock(&print);
 }
@@ -108,6 +107,7 @@ void	*thread_fun(void *data)
 	{
 		pthread_mutex_lock(philo.fork);
 		pthread_mutex_lock(philo.next_fork);
+		printf("status = %d\n", philo.status);
 		printf_mutex("takes first fork", philo);
 		printf_mutex("takes second fork", philo);
 		printf_mutex("is eating", philo);

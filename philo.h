@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: newgate <newgate@student.42.fr>            +#+  +:+       +#+        */
+/*   By: sismaili <sismaili@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/31 16:39:05 by sismaili          #+#    #+#             */
-/*   Updated: 2022/08/04 15:47:50 by newgate          ###   ########.fr       */
+/*   Updated: 2022/08/11 13:07:14 by sismaili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,12 +18,6 @@
 # include <stdlib.h>
 # include <pthread.h>
 # include <sys/time.h>
-
-typedef struct s_f_mutex
-{
-	pthread_mutex_t	fork;
-	int				f_status;
-}	t_mutex;
 
 typedef struct s_number
 {
@@ -49,10 +43,10 @@ typedef struct s_philo
 
 typedef struct s_data
 {
-	char		*str;
-	char		**spl;
-	t_number	numbers;
-	t_philo		*philo;
+	char			*str;
+	char			**spl;
+	t_number		numbers;
+	t_philo			*philo;
 	pthread_mutex_t	*forks;
 }	t_data;
 
