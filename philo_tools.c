@@ -6,7 +6,7 @@
 /*   By: sismaili <sismaili@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 16:08:21 by sismaili          #+#    #+#             */
-/*   Updated: 2022/08/11 15:02:09 by sismaili         ###   ########.fr       */
+/*   Updated: 2022/08/11 19:26:11 by sismaili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,7 @@ void	printf_mutex(char *str, t_philo philo)
 	pthread_mutex_t	print;
 
 	pthread_mutex_lock(&print);
-	philo.numbers->start = ft_gettime();
-	printf("%ld philo number %d %s\n", ft_gettime() - philo.numbers->start, philo.index, str);
+	printf("%ld philo number %d %s\n", ft_gettime() - philo.numbers.start, philo.index, str);
 	pthread_mutex_unlock(&print);
 }
 
@@ -49,6 +48,10 @@ void	ft_init(t_data *var, char **spl)
 	{
 		var->philo[i].fork = &var->forks[i];
 		var->philo[i].next_fork = &var->forks[(i + 1) % var->numbers.numb_of_philo];
+		var->philo[i].numbers = var->numbers;
+		var->philo[i].status = 1;
+		var->philo[i].number_of_eating_times = 0;
+		var->philo[i].numbers.start = ft_gettime();
 		i++;
 	}
 }
@@ -61,11 +64,12 @@ long	ft_gettime()
 	return ((time.tv_sec * 1000) + (time.tv_usec / 1000));
 }
 
-void	ft_time(long number)
+void	ft_time(int number)
 {
 	long	start;
 
 	start = ft_gettime();
+	printf("## %d\n", number);
 	while (ft_gettime() - start < number)
 		usleep(50);
 }
@@ -79,19 +83,22 @@ void	*ft_checker(void *data)
 	while (philo->status)
 	{
 		i = 0;
-		while (i < philo->numbers->numb_of_philo)
+		while (i < philo->numbers.numb_of_philo)
 		{
-			if (ft_gettime() - philo[i].last_time >= philo[i].numbers->time_to_die)
+			if (ft_gettime() - philo[i].last_time >= philo[i].numbers.time_to_die)
 			{
-				printf_mutex("died", *philo);
+				printf_mutex("died", philo[i]);
 				philo[i].status = 0;
 				return (NULL);
 			}
-			if (philo[i].numbers->notepme > 0 && philo[i].number_of_eating_times == philo[i].numbers->notepme)
+			philo[i].number_of_eating_times += 1;
+			// printf("n eat %d\n", philo[i].number_of_eating_times);
+			if (philo[i].numbers.notepme > 0 && philo[i].number_of_eating_times == philo[i].numbers.notepme)
 			{
 				philo[i].status = 0;
 				return (NULL);
 			}
+			// printf("status %d\n", philo->status);
 			i++;
 		}
 	}
@@ -107,17 +114,15 @@ void	*thread_fun(void *data)
 	{
 		pthread_mutex_lock(philo.fork);
 		pthread_mutex_lock(philo.next_fork);
-		printf("status = %d\n", philo.status);
 		printf_mutex("takes first fork", philo);
 		printf_mutex("takes second fork", philo);
 		printf_mutex("is eating", philo);
-		philo.number_of_eating_times += 1;
 		philo.last_time = ft_gettime();
-		ft_time(philo.numbers->time_to_eat);
+		ft_time(philo.numbers.time_to_eat);
 		pthread_mutex_unlock(philo.fork);
 		pthread_mutex_unlock(philo.next_fork);
 		printf_mutex("is sleeping", philo);
-		ft_time(philo.numbers->time_to_sleep);
+		ft_time(philo.numbers.time_to_sleep);
 		printf_mutex("is thinking", philo);
 	}
 	return (NULL);
@@ -130,14 +135,6 @@ void	ft_philo(t_data *var)
 
 	i = 0;
 	ft_init(var, var->spl);
-	while (i < var->numbers.numb_of_philo)
-	{
-		var->philo[i].numbers = &var->numbers;
-		var->philo[i].status = 1;
-		var->philo[i].number_of_eating_times = 0;
-		i++;
-	}
-	i = 0;
 	while (i < var->numbers.numb_of_philo)
 	{
 		var->philo[i].index = i + 1;

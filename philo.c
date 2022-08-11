@@ -6,7 +6,7 @@
 /*   By: sismaili <sismaili@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/29 14:53:39 by sismaili          #+#    #+#             */
-/*   Updated: 2022/08/01 18:33:05 by sismaili         ###   ########.fr       */
+/*   Updated: 2022/08/11 17:18:17 by sismaili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ int	main(int ac, char **av)
 		write(2, "error\n", 6);
 		return (0);
 	}
-	ft_philo(&var);	
+	ft_philo(&var);
 	ft_free(&var);
 	return (0);
 }
