@@ -6,7 +6,7 @@
 /*   By: sismaili <sismaili@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 16:08:21 by sismaili          #+#    #+#             */
-/*   Updated: 2022/08/11 19:26:11 by sismaili         ###   ########.fr       */
+/*   Updated: 2022/09/09 23:35:36 by sismaili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,16 +14,15 @@
 
 void	printf_mutex(char *str, t_philo philo)
 {
-	pthread_mutex_t	print;
-
-	pthread_mutex_lock(&print);
+	pthread_mutex_lock(philo.print);
 	printf("%ld philo number %d %s\n", ft_gettime() - philo.numbers.start, philo.index, str);
-	pthread_mutex_unlock(&print);
+	pthread_mutex_unlock(philo.print);
 }
 
 void	ft_init(t_data *var, char **spl)
 {
 	int	i;
+	pthread_mutex_t *print;
 
 	i = 0;
 	var->numbers.numb_of_philo = ft_atoi(spl[0]);
@@ -36,22 +35,26 @@ void	ft_init(t_data *var, char **spl)
 		var->numbers.notepme = -1;
 	var->philo = malloc(sizeof(t_philo) * var->numbers.numb_of_philo);
 	var->forks = malloc(sizeof(pthread_mutex_t) * var->numbers.numb_of_philo);
-	if (!var->philo || !var->forks)
+	print = malloc(sizeof(pthread_mutex_t) * 1);
+	if (!var->philo || !var->forks || !print)
 		return ;
 	while (i < var->numbers.numb_of_philo)
 	{
 		pthread_mutex_init(&var->forks[i], NULL);
 		i++;
 	}
+	pthread_mutex_init(print, NULL);
 	i = 0;
 	while (i < var->numbers.numb_of_philo)
 	{
+		var->philo[i].last_time = malloc(sizeof(long));
 		var->philo[i].fork = &var->forks[i];
 		var->philo[i].next_fork = &var->forks[(i + 1) % var->numbers.numb_of_philo];
 		var->philo[i].numbers = var->numbers;
 		var->philo[i].status = 1;
-		var->philo[i].number_of_eating_times = 0;
+		// var->philo[i].number_of_eating_times = var->numbers.notepme;
 		var->philo[i].numbers.start = ft_gettime();
+		var->philo[i].print = print;
 		i++;
 	}
 }
@@ -69,7 +72,6 @@ void	ft_time(int number)
 	long	start;
 
 	start = ft_gettime();
-	printf("## %d\n", number);
 	while (ft_gettime() - start < number)
 		usleep(50);
 }
@@ -85,20 +87,21 @@ void	*ft_checker(void *data)
 		i = 0;
 		while (i < philo->numbers.numb_of_philo)
 		{
-			if (ft_gettime() - philo[i].last_time >= philo[i].numbers.time_to_die)
+			long n = ft_gettime() - *philo[i].last_time;
+			if (n >= philo[i].numbers.time_to_die)
 			{
-				printf_mutex("died", philo[i]);
-				philo[i].status = 0;
-				return (NULL);
+				int j = 0;
+				pthread_mutex_lock(philo[i].print);
+				printf("%ld philo number %d %s\n", ft_gettime() - philo[i].numbers.start, philo[i].index, "die");
+				while (j < philo->numbers.numb_of_philo)
+					philo[j++].status = 0;
+				exit(0);
 			}
-			philo[i].number_of_eating_times += 1;
-			// printf("n eat %d\n", philo[i].number_of_eating_times);
-			if (philo[i].numbers.notepme > 0 && philo[i].number_of_eating_times == philo[i].numbers.notepme)
+			if (philo[i].numbers.notepme == 0)
 			{
 				philo[i].status = 0;
-				return (NULL);
+				break ;
 			}
-			// printf("status %d\n", philo->status);
 			i++;
 		}
 	}
@@ -117,7 +120,9 @@ void	*thread_fun(void *data)
 		printf_mutex("takes first fork", philo);
 		printf_mutex("takes second fork", philo);
 		printf_mutex("is eating", philo);
-		philo.last_time = ft_gettime();
+		*philo.last_time = ft_gettime();
+		if (philo.numbers.notepme > 0)
+			philo.numbers.notepme--;
 		ft_time(philo.numbers.time_to_eat);
 		pthread_mutex_unlock(philo.fork);
 		pthread_mutex_unlock(philo.next_fork);
@@ -138,7 +143,7 @@ void	ft_philo(t_data *var)
 	while (i < var->numbers.numb_of_philo)
 	{
 		var->philo[i].index = i + 1;
-		var->philo[i].last_time = ft_gettime();
+		*var->philo[i].last_time = ft_gettime();
 		if (pthread_create(&var->philo[i].philo, NULL, &thread_fun, &var->philo[i]) != 0)
 		{
 			free (var->philo[i].philo);
