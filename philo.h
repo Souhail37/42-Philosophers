@@ -6,7 +6,7 @@
 /*   By: sismaili <sismaili@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/31 16:39:05 by sismaili          #+#    #+#             */
-/*   Updated: 2022/09/11 17:20:43 by sismaili         ###   ########.fr       */
+/*   Updated: 2022/09/11 22:14:11 by sismaili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ typedef struct s_philo
 	t_number	numbers;
 	pthread_mutex_t	*fork;
 	pthread_mutex_t	*next_fork;
-	pthread_mutex_t print;
+	pthread_mutex_t *print;
 }	t_philo;
 
 typedef struct s_data

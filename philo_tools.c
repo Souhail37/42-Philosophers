@@ -6,7 +6,7 @@
 /*   By: sismaili <sismaili@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 16:08:21 by sismaili          #+#    #+#             */
-/*   Updated: 2022/09/11 17:55:23 by sismaili         ###   ########.fr       */
+/*   Updated: 2022/09/11 22:14:19 by sismaili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,15 +14,15 @@
 
 void	printf_mutex(char *str, t_philo philo)
 {
-	pthread_mutex_lock(&philo.print);
+	pthread_mutex_lock(philo.print);
 	printf("%ld philo number %d %s\n", ft_gettime() - philo.numbers.start, philo.index, str);
-	pthread_mutex_unlock(&philo.print);
+	pthread_mutex_unlock(philo.print);
 }
 
 void	ft_init(t_data *var, char **spl)
 {
 	int	i;
-	pthread_mutex_t print;
+	pthread_mutex_t *print;
 
 	i = 0;
 	var->numbers.numb_of_philo = ft_atoi(spl[0]);
@@ -35,14 +35,15 @@ void	ft_init(t_data *var, char **spl)
 		var->numbers.notepme = -1;
 	var->philo = malloc(sizeof(t_philo) * var->numbers.numb_of_philo);
 	var->forks = malloc(sizeof(pthread_mutex_t) * var->numbers.numb_of_philo);
-	if (!var->philo || !var->forks)
+	print = malloc(sizeof(pthread_mutex_t) * 1);
+	if (!var->philo || !var->forks || !print)
 		return ;
 	while (i < var->numbers.numb_of_philo)
 	{
 		pthread_mutex_init(&var->forks[i], NULL);
 		i++;
 	}
-	pthread_mutex_init(&print, NULL);
+	pthread_mutex_init(print, NULL);
 	i = 0;
 	while (i < var->numbers.numb_of_philo)
 	{
@@ -93,7 +94,7 @@ void	*ft_checker(void *data)
 			n = ft_gettime() - philo[i].last_time;
 			if (n >= philo[i].numbers.time_to_die)
 			{
-				pthread_mutex_lock(&philo[i].print);
+				pthread_mutex_lock(philo[i].print);
 				printf("%ld philo number %d %s\n", ft_gettime() - philo[i].numbers.start, philo[i].index, "die");
 				return (0);
 			}

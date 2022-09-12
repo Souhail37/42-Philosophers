@@ -6,7 +6,7 @@
 /*   By: sismaili <sismaili@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/29 14:53:39 by sismaili          #+#    #+#             */
-/*   Updated: 2022/09/11 17:21:26 by sismaili         ###   ########.fr       */
+/*   Updated: 2022/09/11 22:17:31 by sismaili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,9 @@ void	ft_free(t_data *var)
 	if (var->philo)
 		free(var->philo);
 	if (var->forks)
-		free(var->forks);
+		pthread_mutex_destroy(var->forks);
+	if (var->philo->print)
+		pthread_mutex_destroy(var->philo->print);
 }
 
 int	valid_args(char **av)
@@ -73,6 +75,5 @@ int	main(int ac, char **av)
 	}
 	ft_philo(&var);
 	ft_free(&var);
-	// while (1){}
 	return (0);
 }
