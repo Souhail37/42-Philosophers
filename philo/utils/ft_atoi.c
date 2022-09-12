@@ -6,11 +6,11 @@
 /*   By: sismaili <sismaili@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/31 16:43:19 by sismaili          #+#    #+#             */
-/*   Updated: 2022/07/31 22:26:47 by sismaili         ###   ########.fr       */
+/*   Updated: 2022/09/12 18:34:36 by sismaili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo.h"
+#include "../philo.h"
 
 int	ft_atoi(char *str)
 {

@@ -1,8 +1,8 @@
 SRC = philo.c \
-	ft_atoi.c \
-	ft_isdigit.c \
-	ft_split.c \
-	ft_strjoin.c\
+	utils/ft_atoi.c \
+	utils/ft_isdigit.c \
+	utils/ft_split.c \
+	utils/ft_strjoin.c\
 	philo_tools.c
 
 OBJ = ${SRC:.c=.o}

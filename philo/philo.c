@@ -6,7 +6,7 @@
 /*   By: sismaili <sismaili@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/29 14:53:39 by sismaili          #+#    #+#             */
-/*   Updated: 2022/09/11 22:17:31 by sismaili         ###   ########.fr       */
+/*   Updated: 2022/09/12 17:06:07 by sismaili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,9 @@ void	ft_free(t_data *var)
 	free(var->str);
 	if (var->philo)
 		free(var->philo);
-	if (var->forks)
-		pthread_mutex_destroy(var->forks);
+	i = 0;
+	while (i < var->numbers.numb_of_philo)
+		pthread_mutex_destroy(&var->forks[i++]);
 	if (var->philo->print)
 		pthread_mutex_destroy(var->philo->print);
 }

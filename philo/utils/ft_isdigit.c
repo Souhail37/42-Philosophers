@@ -6,11 +6,11 @@
 /*   By: sismaili <sismaili@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/31 16:45:59 by sismaili          #+#    #+#             */
-/*   Updated: 2022/07/31 22:27:17 by sismaili         ###   ########.fr       */
+/*   Updated: 2022/09/12 18:34:35 by sismaili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo.h"
+#include "../philo.h"
 
 int	ft_isdigit(char **str)
 {
