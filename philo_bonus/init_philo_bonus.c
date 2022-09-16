@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   init_philo.c                                       :+:      :+:    :+:   */
+/*   init_philo_bonus.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sismaili <sismaili@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 14:26:08 by sismaili          #+#    #+#             */
-/*   Updated: 2022/09/15 14:38:23 by sismaili         ###   ########.fr       */
+/*   Updated: 2022/09/15 20:51:32 by sismaili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo.h"
+#include "philo_bonus.h"
 
 static void	init_numbers(t_data *var, char **spl)
 {
@@ -24,44 +24,43 @@ static void	init_numbers(t_data *var, char **spl)
 		var->numbers.notepme = -1;
 }
 
-static void	init_philosophers(t_data *var, pthread_mutex_t *print)
+static void	init_philosophers(t_data *var, sem_t *print)
 {
 	int	i;
 
-	i = 0;
-	while (i < var->numbers.numb_of_philo)
+	i = 1;
+	while (i <= var->numbers.numb_of_philo)
 	{
-		var->philo[i].fork = &var->forks[i];
-		var->philo[i].next_fork = &var->forks[(i + 1)
-			% var->numbers.numb_of_philo];
+		var->philo[i].fork = &var->forks[i - 1];
+		var->philo[i].second_fork = &var->forks[i];
 		var->philo[i].numbers = var->numbers;
 		var->philo[i].status = 1;
 		var->philo[i].number_of_eating = 0;
 		var->philo[i].numbers.start = ft_gettime();
 		var->philo[i].last_time = var->philo[i].numbers.start;
 		var->philo[i].print = print;
-		var->philo[i].index = i + 1;
+		var->philo[i].index = i;
 		i++;
 	}
 }
 
 void	ft_init(t_data *var, char **spl)
 {
-	pthread_mutex_t	*print;
-	int				i;
+	sem_t	*print;
+	int		i;
 
 	i = 0;
 	init_numbers(var, spl);
 	var->philo = malloc(sizeof(t_philo) * var->numbers.numb_of_philo);
-	var->forks = malloc(sizeof(pthread_mutex_t) * var->numbers.numb_of_philo);
-	print = malloc(sizeof(pthread_mutex_t) * 1);
+	var->forks = malloc(sizeof(sem_t) * var->numbers.numb_of_philo);
+	print = malloc(sizeof(sem_t) * 1);
 	if (!var->philo || !var->forks || !print)
 		return ;
 	while (i < var->numbers.numb_of_philo)
 	{
-		pthread_mutex_init(&var->forks[i], NULL);
+		var->forks = sem_open("forks", O_CREAT, 0644, i);
 		i++;
 	}
-	pthread_mutex_init(print, NULL);
+	print = sem_open("print", O_CREAT, 0644, 1);
 	init_philosophers(var, print);
 }

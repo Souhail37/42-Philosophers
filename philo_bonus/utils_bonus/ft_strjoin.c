@@ -6,11 +6,11 @@
 /*   By: sismaili <sismaili@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/31 21:49:00 by sismaili          #+#    #+#             */
-/*   Updated: 2022/09/12 18:34:33 by sismaili         ###   ########.fr       */
+/*   Updated: 2022/09/15 14:51:35 by sismaili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../philo.h"
+#include "../philo_bonus.h"
 
 size_t	ft_strlen(char *s)
 {

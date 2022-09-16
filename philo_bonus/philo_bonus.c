@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   philo.c                                            :+:      :+:    :+:   */
+/*   philo_bonus.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sismaili <sismaili@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/29 14:53:39 by sismaili          #+#    #+#             */
-/*   Updated: 2022/09/12 17:06:07 by sismaili         ###   ########.fr       */
+/*   Updated: 2022/09/15 18:27:40 by sismaili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo.h"
+#include "philo_bonus.h"
 
 void	ft_free(t_data *var)
 {
@@ -25,9 +25,9 @@ void	ft_free(t_data *var)
 		free(var->philo);
 	i = 0;
 	while (i < var->numbers.numb_of_philo)
-		pthread_mutex_destroy(&var->forks[i++]);
+		sem_close(&var->forks[i++]);
 	if (var->philo->print)
-		pthread_mutex_destroy(var->philo->print);
+		sem_close(var->philo->print);
 }
 
 int	valid_args(char **av)

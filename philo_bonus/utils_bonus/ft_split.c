@@ -6,11 +6,11 @@
 /*   By: sismaili <sismaili@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/31 21:46:30 by sismaili          #+#    #+#             */
-/*   Updated: 2022/09/12 18:34:27 by sismaili         ###   ########.fr       */
+/*   Updated: 2022/09/15 14:51:36 by sismaili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../philo.h"
+#include "../philo_bonus.h"
 
 static int	ft_count(char const *s, char c)
 {

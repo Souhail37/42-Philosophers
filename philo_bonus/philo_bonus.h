@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   philo.h                                            :+:      :+:    :+:   */
+/*   philo_bonus.h                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sismaili <sismaili@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/31 16:39:05 by sismaili          #+#    #+#             */
-/*   Updated: 2022/09/15 14:44:47 by sismaili         ###   ########.fr       */
+/*   Updated: 2022/09/15 18:54:54 by sismaili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@
 # include <stdlib.h>
 # include <pthread.h>
 # include <sys/time.h>
+# include <semaphore.h>
+# include <signal.h>
 
 typedef struct s_number
 {
@@ -35,11 +37,11 @@ typedef struct s_philo
 	long			last_time;
 	int				number_of_eating;
 	int				status;
-	pthread_t		philo;
+	// pthread_t		philo;
 	t_number		numbers;
-	pthread_mutex_t	*fork;
-	pthread_mutex_t	*next_fork;
-	pthread_mutex_t	*print;
+	sem_t		*fork;
+	sem_t		*second_fork;
+	sem_t		*print;
 }	t_philo;
 
 typedef struct s_data
@@ -48,7 +50,7 @@ typedef struct s_data
 	char			**spl;
 	t_number		numbers;
 	t_philo			*philo;
-	pthread_mutex_t	*forks;
+	sem_t			*forks;
 }	t_data;
 
 int		ft_atoi(char *str);
