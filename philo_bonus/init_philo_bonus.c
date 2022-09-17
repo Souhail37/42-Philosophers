@@ -6,7 +6,7 @@
 /*   By: sismaili <sismaili@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 14:26:08 by sismaili          #+#    #+#             */
-/*   Updated: 2022/09/15 20:51:32 by sismaili         ###   ########.fr       */
+/*   Updated: 2022/09/17 19:53:02 by sismaili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,21 +24,18 @@ static void	init_numbers(t_data *var, char **spl)
 		var->numbers.notepme = -1;
 }
 
-static void	init_philosophers(t_data *var, sem_t *print)
+static void	init_philosophers(t_data *var)
 {
 	int	i;
 
 	i = 1;
 	while (i <= var->numbers.numb_of_philo)
 	{
-		var->philo[i].fork = &var->forks[i - 1];
-		var->philo[i].second_fork = &var->forks[i];
 		var->philo[i].numbers = var->numbers;
 		var->philo[i].status = 1;
 		var->philo[i].number_of_eating = 0;
 		var->philo[i].numbers.start = ft_gettime();
 		var->philo[i].last_time = var->philo[i].numbers.start;
-		var->philo[i].print = print;
 		var->philo[i].index = i;
 		i++;
 	}
@@ -46,21 +43,21 @@ static void	init_philosophers(t_data *var, sem_t *print)
 
 void	ft_init(t_data *var, char **spl)
 {
-	sem_t	*print;
 	int		i;
 
 	i = 0;
 	init_numbers(var, spl);
 	var->philo = malloc(sizeof(t_philo) * var->numbers.numb_of_philo);
-	var->forks = malloc(sizeof(sem_t) * var->numbers.numb_of_philo);
-	print = malloc(sizeof(sem_t) * 1);
-	if (!var->philo || !var->forks || !print)
+	// var->forks = malloc(sizeof(sem_t) * var->numbers.numb_of_philo);
+	// print = malloc(sizeof(sem_t) * 1);
+	if (!var->philo)
 		return ;
-	while (i < var->numbers.numb_of_philo)
-	{
-		var->forks = sem_open("forks", O_CREAT, 0644, i);
-		i++;
-	}
-	print = sem_open("print", O_CREAT, 0644, 1);
-	init_philosophers(var, print);
+	// while (i < var->numbers.numb_of_philo)
+	// {
+	sem_unlink("forks");
+	var->forks = sem_open("forks", O_CREAT, 0644, var->numbers.numb_of_philo);
+	// 	i++;
+	// }
+	// var->print = sem_open("print", O_CREAT, 0644, 1);
+	init_philosophers(var);
 }

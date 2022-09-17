@@ -6,38 +6,40 @@
 /*   By: sismaili <sismaili@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 16:08:21 by sismaili          #+#    #+#             */
-/*   Updated: 2022/09/15 20:51:59 by sismaili         ###   ########.fr       */
+/*   Updated: 2022/09/17 19:53:05 by sismaili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_bonus.h"
 
-void	printf_sem(char *str, t_philo philo)
+void	printf_sem(char *str, t_data *var)
 {
-	sem_wait(philo.print);
+	sem_wait(&var->print);
+	printf("start = %ld\n", var->philo->numbers.start);
 	printf("%ld philo number %d %s\n",
-		ft_gettime() - philo.numbers.start, philo.index, str);
-	sem_post(philo.print);
+		ft_gettime() - var->philo->numbers.start, var->philo->index, str);
+	sem_post(&var->print);
 }
 
-void	*philo_fun(t_philo *philo)
+void	*philo_fun(t_data *var)
 {
+	checker_thread(var);
 	while (1)
 	{
-		sem_wait(philo->fork);
-		sem_wait(philo->second_fork);
-		printf_sem("takes first fork", *philo);
-		printf_sem("takes second fork", *philo);
-		printf_sem("is eating", *philo);
-		philo->last_time = ft_gettime();
-		if (philo->numbers.notepme > 0)
-			philo->number_of_eating++;
-		ft_time(philo->numbers.time_to_eat);
-		sem_post(philo->fork);
-		sem_post(philo->second_fork);
-		printf_sem("is sleeping", *philo);
-		ft_time(philo->numbers.time_to_sleep);
-		printf_sem("is thinking", *philo);
+		sem_wait(var->forks);
+		sem_wait(var->forks);
+		printf_sem("takes first fork", var);
+		printf_sem("takes second fork", var);
+		printf_sem("is eating", var);
+		var->philo->last_time = ft_gettime();
+		if (var->philo->numbers.notepme > 0)
+			var->philo->number_of_eating++;
+		ft_time(var->philo->numbers.time_to_eat);
+		sem_post(var->forks);
+		sem_post(var->forks);
+		printf_sem("is sleeping", var);
+		ft_time(var->philo->numbers.time_to_sleep);
+		printf_sem("is thinking", var);
 	}
 	return (NULL);
 }
@@ -45,23 +47,23 @@ void	*philo_fun(t_philo *philo)
 void	ft_philo(t_data *var)
 {
 	int		i;
-	pid_t	pid;
 
 	i = 0;
 	ft_init(var, var->spl);
+	var->philo->pid = malloc(sizeof(pid_t) * var->numbers.numb_of_philo);
+	if (!var->philo->pid)
+		return ;
 	while (i < var->numbers.numb_of_philo)
 	{
-		pid = fork();
-		if (pid == 0)
+		var->philo->pid[i] = fork();
+		if (var->philo->pid[i] == -1)
 		{
-			philo_fun(var->philo);
-			kill(pid, SIGKILL);
+			// var->philo->numbers.start = ft_gettime();
+			printf("Error in fork !\n");
+			exit(EXIT_FAILURE);
 		}
-		else
-		{
-			waitpid(pid, NULL, 0);
-		}
+		if (var->philo->pid[i] == 0)
+			philo_fun(var);
 		i++;
 	}
-	checker_thread(var);
 }
