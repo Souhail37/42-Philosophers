@@ -6,7 +6,7 @@
 /*   By: sismaili <sismaili@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 16:08:21 by sismaili          #+#    #+#             */
-/*   Updated: 2022/09/17 19:53:05 by sismaili         ###   ########.fr       */
+/*   Updated: 2022/09/18 17:15:22 by sismaili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 void	printf_sem(char *str, t_data *var)
 {
 	sem_wait(&var->print);
-	printf("start = %ld\n", var->philo->numbers.start);
 	printf("%ld philo number %d %s\n",
 		ft_gettime() - var->philo->numbers.start, var->philo->index, str);
 	sem_post(&var->print);
@@ -23,7 +22,13 @@ void	printf_sem(char *str, t_data *var)
 
 void	*philo_fun(t_data *var)
 {
-	checker_thread(var);
+	pthread_t	checker;
+
+	if (pthread_create(&checker, NULL, &ft_checker, var) != 0)
+	{
+		free (checker);
+		return (NULL);
+	}
 	while (1)
 	{
 		sem_wait(var->forks);
@@ -40,6 +45,11 @@ void	*philo_fun(t_data *var)
 		printf_sem("is sleeping", var);
 		ft_time(var->philo->numbers.time_to_sleep);
 		printf_sem("is thinking", var);
+	}
+	if (pthread_join(checker, NULL) != 0)
+	{
+		free (checker);
+		return (NULL);
 	}
 	return (NULL);
 }
@@ -58,12 +68,15 @@ void	ft_philo(t_data *var)
 		var->philo->pid[i] = fork();
 		if (var->philo->pid[i] == -1)
 		{
-			// var->philo->numbers.start = ft_gettime();
 			printf("Error in fork !\n");
 			exit(EXIT_FAILURE);
 		}
 		if (var->philo->pid[i] == 0)
+		{
+			var->philo->index = i + 1;
+			var->philo->last_time = ft_gettime();
 			philo_fun(var);
+		}
 		i++;
 	}
 }
