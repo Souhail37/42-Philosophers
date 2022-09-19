@@ -6,13 +6,13 @@
 /*   By: sismaili <sismaili@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 16:08:21 by sismaili          #+#    #+#             */
-/*   Updated: 2022/09/18 17:15:22 by sismaili         ###   ########.fr       */
+/*   Updated: 2022/09/19 21:15:19 by sismaili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_bonus.h"
 
-void	printf_sem(char *str, t_data *var)
+static void	printf_sem(char *str, t_data *var)
 {
 	sem_wait(&var->print);
 	printf("%ld philo number %d %s\n",
@@ -20,35 +20,40 @@ void	printf_sem(char *str, t_data *var)
 	sem_post(&var->print);
 }
 
-void	*philo_fun(t_data *var)
+static void	routine(t_data *var)
 {
-	pthread_t	checker;
+	sem_wait(var->forks);
+	sem_wait(var->forks);
+	printf_sem("takes first fork", var);
+	printf_sem("takes second fork", var);
+	printf_sem("is eating", var);
+	var->philo->last_time = ft_gettime();
+	if (var->philo->numbers.notepme > 0)
+		var->philo->number_of_eating++;
+	ft_time(var->philo->numbers.time_to_eat);
+	sem_post(var->forks);
+	sem_post(var->forks);
+	printf_sem("is sleeping", var);
+	ft_time(var->philo->numbers.time_to_sleep);
+	printf_sem("is thinking", var);
+}
 
-	if (pthread_create(&checker, NULL, &ft_checker, var) != 0)
+static void	*philo_fun(t_data *var)
+{
+	if (pthread_create(&var->checker, NULL, &ft_checker, var) != 0)
 	{
-		free (checker);
+		free (var->checker);
 		return (NULL);
 	}
 	while (1)
 	{
-		sem_wait(var->forks);
-		sem_wait(var->forks);
-		printf_sem("takes first fork", var);
-		printf_sem("takes second fork", var);
-		printf_sem("is eating", var);
-		var->philo->last_time = ft_gettime();
-		if (var->philo->numbers.notepme > 0)
-			var->philo->number_of_eating++;
-		ft_time(var->philo->numbers.time_to_eat);
-		sem_post(var->forks);
-		sem_post(var->forks);
-		printf_sem("is sleeping", var);
-		ft_time(var->philo->numbers.time_to_sleep);
-		printf_sem("is thinking", var);
+		routine(var);
+		if (var->philo->status == 0)
+			exit (0);
 	}
-	if (pthread_join(checker, NULL) != 0)
+	if (pthread_join(var->checker, NULL) != 0)
 	{
-		free (checker);
+		free (var->checker);
 		return (NULL);
 	}
 	return (NULL);
@@ -75,6 +80,7 @@ void	ft_philo(t_data *var)
 		{
 			var->philo->index = i + 1;
 			var->philo->last_time = ft_gettime();
+			var->philo->eating = 0;
 			philo_fun(var);
 		}
 		i++;

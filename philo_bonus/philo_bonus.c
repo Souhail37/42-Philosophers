@@ -6,13 +6,13 @@
 /*   By: sismaili <sismaili@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/29 14:53:39 by sismaili          #+#    #+#             */
-/*   Updated: 2022/09/17 19:31:53 by sismaili         ###   ########.fr       */
+/*   Updated: 2022/09/19 21:15:46 by sismaili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_bonus.h"
 
-void	ft_free(t_data *var)
+static void	ft_free(t_data *var)
 {
 	int	i;
 	int	check;
@@ -24,26 +24,21 @@ void	ft_free(t_data *var)
 	free(var->str);
 	if (var->philo)
 		free(var->philo);
-	i = 0;
-	while (i < var->numbers.numb_of_philo)
+	i = -1;
+	while (++i < var->numbers.numb_of_philo)
 	{
 		waitpid(-1, &check, 0);
 		if (check != 0)
 		{
-			i = 0;
-			while (i < var->numbers.numb_of_philo)
-			{
+			i = -1;
+			while (++i < var->numbers.numb_of_philo)
 				kill(var->philo->pid[i], SIGKILL);
-				i++;
-			}
-			break;
+			break ;
 		}
-		i++;
 	}
-	while (i < var->numbers.numb_of_philo)
-		sem_close(&var->forks[i++]);
-	if (var->print)
-		sem_close(& var->print);
+	sem_close(var->forks);
+	sem_close(&var->print);
+	sem_unlink("forks");
 }
 
 int	valid_args(char **av)

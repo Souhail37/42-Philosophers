@@ -6,12 +6,12 @@
 /*   By: sismaili <sismaili@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/31 16:39:05 by sismaili          #+#    #+#             */
-/*   Updated: 2022/09/17 19:10:50 by sismaili         ###   ########.fr       */
+/*   Updated: 2022/09/19 21:10:35 by sismaili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PHILO_H
-# define PHILO_H
+#ifndef PHILO_BONUS_H
+# define PHILO_BONUS_H
 
 # include <stdio.h>
 # include <unistd.h>
@@ -37,6 +37,7 @@ typedef struct s_philo
 	long		last_time;
 	int			number_of_eating;
 	int			status;
+	int			eating;
 	pid_t		*pid;
 	t_number	numbers;
 }	t_philo;
@@ -49,6 +50,7 @@ typedef struct s_data
 	t_philo		*philo;
 	sem_t		*forks;
 	sem_t		print;
+	pthread_t	checker;
 }	t_data;
 
 int		ft_atoi(char *str);
