@@ -6,7 +6,7 @@
 /*   By: sismaili <sismaili@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 14:33:13 by sismaili          #+#    #+#             */
-/*   Updated: 2022/09/19 21:07:45 by sismaili         ###   ########.fr       */
+/*   Updated: 2022/09/19 22:33:18 by sismaili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ static int	check_n(long n, t_data *var)
 {
 	if (n > var->philo->numbers.time_to_die)
 	{
-		sem_wait(&var->print);
+		sem_wait(var->print);
 		printf("%ld philo number %d %s\n",
 			ft_gettime() - var->philo->numbers.start, var->philo->index, "die");
 		return (0);

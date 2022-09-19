@@ -6,7 +6,7 @@
 /*   By: sismaili <sismaili@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 16:08:21 by sismaili          #+#    #+#             */
-/*   Updated: 2022/09/19 21:15:19 by sismaili         ###   ########.fr       */
+/*   Updated: 2022/09/19 22:33:13 by sismaili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,10 @@
 
 static void	printf_sem(char *str, t_data *var)
 {
-	sem_wait(&var->print);
+	sem_wait(var->print);
 	printf("%ld philo number %d %s\n",
 		ft_gettime() - var->philo->numbers.start, var->philo->index, str);
-	sem_post(&var->print);
+	sem_post(var->print);
 }
 
 static void	routine(t_data *var)

@@ -6,7 +6,7 @@
 /*   By: sismaili <sismaili@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/31 16:39:05 by sismaili          #+#    #+#             */
-/*   Updated: 2022/09/19 21:10:35 by sismaili         ###   ########.fr       */
+/*   Updated: 2022/09/19 22:32:18 by sismaili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ typedef struct s_data
 	t_number	numbers;
 	t_philo		*philo;
 	sem_t		*forks;
-	sem_t		print;
+	sem_t		*print;
 	pthread_t	checker;
 }	t_data;
 

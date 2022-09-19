@@ -6,7 +6,7 @@
 /*   By: sismaili <sismaili@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/29 14:53:39 by sismaili          #+#    #+#             */
-/*   Updated: 2022/09/19 21:15:46 by sismaili         ###   ########.fr       */
+/*   Updated: 2022/09/19 22:32:56 by sismaili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,8 +37,9 @@ static void	ft_free(t_data *var)
 		}
 	}
 	sem_close(var->forks);
-	sem_close(&var->print);
+	sem_close(var->print);
 	sem_unlink("forks");
+	sem_unlink("print");
 }
 
 int	valid_args(char **av)
