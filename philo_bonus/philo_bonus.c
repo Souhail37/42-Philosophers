@@ -6,7 +6,7 @@
 /*   By: sismaili <sismaili@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/29 14:53:39 by sismaili          #+#    #+#             */
-/*   Updated: 2022/09/19 22:32:56 by sismaili         ###   ########.fr       */
+/*   Updated: 2022/09/19 22:40:34 by sismaili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,7 @@ static void	ft_free(t_data *var)
 		free(var->spl[i++]);
 	free(var->spl);
 	free(var->str);
-	if (var->philo)
-		free(var->philo);
+	free(var->philo);
 	i = -1;
 	while (++i < var->numbers.numb_of_philo)
 	{

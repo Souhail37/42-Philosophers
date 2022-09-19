@@ -6,7 +6,7 @@
 /*   By: sismaili <sismaili@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 16:08:21 by sismaili          #+#    #+#             */
-/*   Updated: 2022/09/19 22:33:13 by sismaili         ###   ########.fr       */
+/*   Updated: 2022/09/19 22:38:07 by sismaili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,4 +85,5 @@ void	ft_philo(t_data *var)
 		}
 		i++;
 	}
+	free (var->philo->pid);
 }
