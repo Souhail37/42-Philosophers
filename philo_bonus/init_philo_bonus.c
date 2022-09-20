@@ -6,7 +6,7 @@
 /*   By: sismaili <sismaili@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 14:26:08 by sismaili          #+#    #+#             */
-/*   Updated: 2022/09/19 22:32:41 by sismaili         ###   ########.fr       */
+/*   Updated: 2022/09/20 20:44:01 by sismaili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ static void	init_philosophers(t_data *var)
 	var->philo->numbers.start = ft_gettime();
 	var->philo->last_time = var->philo->numbers.start;
 	var->philo->index = 1;
+	var->philo->eating = 0;
 }
 
 void	ft_init(t_data *var, char **spl)
@@ -41,6 +42,7 @@ void	ft_init(t_data *var, char **spl)
 	if (!var->philo)
 		return ;
 	sem_unlink("forks");
+	sem_unlink("print");
 	var->forks = sem_open("forks", O_CREAT, 0644, var->numbers.numb_of_philo);
 	var->print = sem_open("print", O_CREAT, 0644, 1);
 	init_philosophers(var);

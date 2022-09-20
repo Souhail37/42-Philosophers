@@ -6,7 +6,7 @@
 /*   By: sismaili <sismaili@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 14:33:13 by sismaili          #+#    #+#             */
-/*   Updated: 2022/09/19 22:33:18 by sismaili         ###   ########.fr       */
+/*   Updated: 2022/09/20 22:46:30 by sismaili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ void	*ft_checker(void *data)
 	{
 		n = ft_gettime() - var->philo->last_time;
 		if (!check_n(n, var))
-			exit (1);
+			exit (var->philo->index);
 		var->philo->eating += (var->philo->numbers.notepme > 0
 				&& var->philo->number_of_eating >= var->philo->numbers.notepme);
 		if (var->philo->eating == var->philo->numbers.numb_of_philo)

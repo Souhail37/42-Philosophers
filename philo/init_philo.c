@@ -6,7 +6,7 @@
 /*   By: sismaili <sismaili@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 14:26:08 by sismaili          #+#    #+#             */
-/*   Updated: 2022/09/15 14:38:23 by sismaili         ###   ########.fr       */
+/*   Updated: 2022/09/20 19:05:59 by sismaili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,10 +58,7 @@ void	ft_init(t_data *var, char **spl)
 	if (!var->philo || !var->forks || !print)
 		return ;
 	while (i < var->numbers.numb_of_philo)
-	{
-		pthread_mutex_init(&var->forks[i], NULL);
-		i++;
-	}
+		pthread_mutex_init(&var->forks[i++], NULL);
 	pthread_mutex_init(print, NULL);
 	init_philosophers(var, print);
 }

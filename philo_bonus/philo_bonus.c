@@ -6,7 +6,7 @@
 /*   By: sismaili <sismaili@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/29 14:53:39 by sismaili          #+#    #+#             */
-/*   Updated: 2022/09/19 22:40:34 by sismaili         ###   ########.fr       */
+/*   Updated: 2022/09/20 23:11:55 by sismaili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,18 +23,11 @@ static void	ft_free(t_data *var)
 	free(var->spl);
 	free(var->str);
 	free(var->philo);
+	waitpid(-1, &check, 0);
 	i = -1;
 	while (++i < var->numbers.numb_of_philo)
-	{
-		waitpid(-1, &check, 0);
-		if (check != 0)
-		{
-			i = -1;
-			while (++i < var->numbers.numb_of_philo)
-				kill(var->philo->pid[i], SIGKILL);
-			break ;
-		}
-	}
+		kill(var->philo->pid[i], SIGKILL);
+	free (var->philo->pid);
 	sem_close(var->forks);
 	sem_close(var->print);
 	sem_unlink("forks");

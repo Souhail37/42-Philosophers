@@ -6,7 +6,7 @@
 /*   By: sismaili <sismaili@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 16:08:21 by sismaili          #+#    #+#             */
-/*   Updated: 2022/09/19 22:38:07 by sismaili         ###   ########.fr       */
+/*   Updated: 2022/09/20 23:09:38 by sismaili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,20 +70,20 @@ void	ft_philo(t_data *var)
 		return ;
 	while (i < var->numbers.numb_of_philo)
 	{
-		var->philo->pid[i] = fork();
-		if (var->philo->pid[i] == -1)
+		int id = fork();
+		if (id == -1)
 		{
 			printf("Error in fork !\n");
 			exit(EXIT_FAILURE);
 		}
-		if (var->philo->pid[i] == 0)
+		if (id == 0)
 		{
 			var->philo->index = i + 1;
 			var->philo->last_time = ft_gettime();
-			var->philo->eating = 0;
 			philo_fun(var);
 		}
+		else
+			var->philo->pid[i] = id;
 		i++;
 	}
-	free (var->philo->pid);
 }
