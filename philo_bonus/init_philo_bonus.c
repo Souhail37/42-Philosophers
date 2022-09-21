@@ -6,7 +6,7 @@
 /*   By: sismaili <sismaili@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 14:26:08 by sismaili          #+#    #+#             */
-/*   Updated: 2022/09/20 20:44:01 by sismaili         ###   ########.fr       */
+/*   Updated: 2022/09/21 15:00:01 by sismaili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,6 @@ static void	init_philosophers(t_data *var)
 	var->philo->status = 1;
 	var->philo->number_of_eating = 0;
 	var->philo->numbers.start = ft_gettime();
-	var->philo->last_time = var->philo->numbers.start;
-	var->philo->index = 1;
 	var->philo->eating = 0;
 }
 

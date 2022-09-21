@@ -6,7 +6,7 @@
 /*   By: sismaili <sismaili@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/29 14:53:39 by sismaili          #+#    #+#             */
-/*   Updated: 2022/09/20 23:11:55 by sismaili         ###   ########.fr       */
+/*   Updated: 2022/09/21 15:00:06 by sismaili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,16 +22,17 @@ static void	ft_free(t_data *var)
 		free(var->spl[i++]);
 	free(var->spl);
 	free(var->str);
-	free(var->philo);
-	waitpid(-1, &check, 0);
-	i = -1;
-	while (++i < var->numbers.numb_of_philo)
-		kill(var->philo->pid[i], SIGKILL);
-	free (var->philo->pid);
-	sem_close(var->forks);
-	sem_close(var->print);
-	sem_unlink("forks");
-	sem_unlink("print");
+	if (var->philo)
+	{
+		free(var->philo);
+		waitpid(-1, &check, 0);
+		i = -1;
+		while (++i < var->numbers.numb_of_philo)
+			kill(var->philo->pid[i], SIGKILL);
+		free (var->philo->pid);
+		sem_close(var->forks);
+		sem_close(var->print);
+	}
 }
 
 int	valid_args(char **av)
@@ -71,12 +72,12 @@ int	main(int ac, char **av)
 	if (i < 4 || i > 5)
 	{
 		write(2, "error! Invalid arguments\n", 25);
-		return (0);
+		return (ft_free(&var), 0);
 	}
 	if (!ft_isdigit(var.spl) || !is_max_int(var.spl, i))
 	{
 		write(2, "error\n", 6);
-		return (0);
+		return (ft_free(&var), 0);
 	}
 	ft_philo(&var);
 	ft_free(&var);

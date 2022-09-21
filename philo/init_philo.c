@@ -6,7 +6,7 @@
 /*   By: sismaili <sismaili@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 14:26:08 by sismaili          #+#    #+#             */
-/*   Updated: 2022/09/20 19:05:59 by sismaili         ###   ########.fr       */
+/*   Updated: 2022/09/21 14:24:39 by sismaili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,6 @@ static void	init_philosophers(t_data *var, pthread_mutex_t *print)
 		var->philo[i].next_fork = &var->forks[(i + 1)
 			% var->numbers.numb_of_philo];
 		var->philo[i].numbers = var->numbers;
-		var->philo[i].status = 1;
 		var->philo[i].number_of_eating = 0;
 		var->philo[i].numbers.start = ft_gettime();
 		var->philo[i].last_time = var->philo[i].numbers.start;

@@ -6,7 +6,7 @@
 /*   By: sismaili <sismaili@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/31 16:39:05 by sismaili          #+#    #+#             */
-/*   Updated: 2022/09/15 14:44:47 by sismaili         ###   ########.fr       */
+/*   Updated: 2022/09/21 14:24:45 by sismaili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,6 @@ typedef struct s_philo
 	int				index;
 	long			last_time;
 	int				number_of_eating;
-	int				status;
 	pthread_t		philo;
 	t_number		numbers;
 	pthread_mutex_t	*fork;

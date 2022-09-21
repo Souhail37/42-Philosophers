@@ -6,7 +6,7 @@
 /*   By: sismaili <sismaili@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/29 14:53:39 by sismaili          #+#    #+#             */
-/*   Updated: 2022/09/20 19:08:57 by sismaili         ###   ########.fr       */
+/*   Updated: 2022/09/21 14:33:16 by sismaili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,13 +22,15 @@ void	ft_free(t_data *var)
 	free(var->spl);
 	free(var->str);
 	if (var->philo)
+	{
 		free(var->philo);
-	i = 0;
-	while (i < var->numbers.numb_of_philo)
-		pthread_mutex_destroy(&var->forks[i++]);
-	pthread_mutex_destroy(var->philo->print);
-	free (var->philo->print);
-	free (var->forks);
+		i = 0;
+		while (i < var->numbers.numb_of_philo)
+			pthread_mutex_destroy(&var->forks[i++]);
+		pthread_mutex_destroy(var->philo->print);
+		free (var->philo->print);
+		free (var->forks);
+	}
 }
 
 int	valid_args(char **av)
@@ -68,12 +70,12 @@ int	main(int ac, char **av)
 	if (i < 4 || i > 5)
 	{
 		write(2, "error! Invalid arguments\n", 25);
-		return (0);
+		return (ft_free(&var), 0);
 	}
 	if (!ft_isdigit(var.spl) || !is_max_int(var.spl, i))
 	{
 		write(2, "error\n", 6);
-		return (0);
+		return (ft_free(&var), 0);
 	}
 	ft_philo(&var);
 	ft_free(&var);

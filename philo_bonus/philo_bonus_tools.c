@@ -6,7 +6,7 @@
 /*   By: sismaili <sismaili@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 16:08:21 by sismaili          #+#    #+#             */
-/*   Updated: 2022/09/20 23:09:38 by sismaili         ###   ########.fr       */
+/*   Updated: 2022/09/21 13:52:34 by sismaili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,8 @@ static void	*philo_fun(t_data *var)
 
 void	ft_philo(t_data *var)
 {
-	int		i;
+	int	i;
+	int	id;
 
 	i = 0;
 	ft_init(var, var->spl);
@@ -70,12 +71,9 @@ void	ft_philo(t_data *var)
 		return ;
 	while (i < var->numbers.numb_of_philo)
 	{
-		int id = fork();
+		id = fork();
 		if (id == -1)
-		{
-			printf("Error in fork !\n");
 			exit(EXIT_FAILURE);
-		}
 		if (id == 0)
 		{
 			var->philo->index = i + 1;

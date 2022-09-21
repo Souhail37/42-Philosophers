@@ -6,7 +6,7 @@
 /*   By: sismaili <sismaili@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 14:33:13 by sismaili          #+#    #+#             */
-/*   Updated: 2022/09/20 15:31:41 by sismaili         ###   ########.fr       */
+/*   Updated: 2022/09/21 14:23:25 by sismaili         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ void	*ft_checker(void *data)
 	int		eating;
 
 	philo = (t_philo *)data;
-	while (philo->status)
+	while (1)
 	{
 		i = 0;
 		eating = 0;
